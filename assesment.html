@@ -29,7 +29,7 @@
             margin-bottom: 20px;
         }
 
-        .delete-btn {
+        .cancel-btn,.delete-btn {
             background-color: #dc3545;
             color: #fff;
             padding: 10px;
@@ -62,7 +62,7 @@
             background-color: #0056b3;
         }
 
-        .edit-btn, .save-btn, .cancel-btn {
+        .edit-btn, .save-btn {
             background-color: #28a745;
             color: #fff;
             padding: 10px;
@@ -78,6 +78,29 @@
         .select-all-checkbox {
             margin-right: 10px;
         }
+      
+        /* Styles for blurring other rows */
+        .blur-row {
+            filter: blur(3px);
+        }
+
+        /* Styles for enlarging the clicked row */
+        .enlarge-row {
+            transform: scale(1.1);
+            font-weight: bold;
+            transition: transform 0.5s ease, font-weight 0.5s ease;
+        }
+
+        /* Styles for transition effects */
+        .save-transition {
+            transition: transform 5s ease, font-weight 5s ease, opacity 5s ease, background-color 5s ease, color 5s ease, padding 5s ease;
+        }
+
+        /* Styles for reverse transition on Save button */
+        .reverse-save-transition {
+            transition: transform 0.5s ease, font-weight 0.5s ease, opacity 0.5s ease, background-color 0.5s ease, color 0.5s ease, padding 0.5s ease;
+        }
+
     </style>
 </head>
 <body>
@@ -105,8 +128,7 @@
 </table>
 
 <!-- Pagination Section -->
-<div class="pagination" id="pagination">
-</div>
+<div class="pagination" id="pagination"></div>
 
 <!-- Delete Selected Button -->
 <div>
@@ -152,13 +174,11 @@
                     input.value = value;
                     cell.appendChild(input);
                 } else {
-                    if (key === 'id') {
-                        // Add checkbox for row selection
+                    if (index === 0) { // Check if it's the first column
+                        // Add checkbox for row selection to the first column
                         const checkbox = document.createElement('input');
                         checkbox.type = 'checkbox';
                         checkbox.value = user.id;
-                        checkbox.checked = selectedRows.includes(user.id);
-                        checkbox.addEventListener('change', () => selectRow(row, user.id));
                         cell.appendChild(checkbox);
                     } else {
                         cell.textContent = value;
@@ -168,17 +188,22 @@
 
             // Add edit, save, and cancel buttons
             const actionsCell = row.insertCell();
-            if (editedRowId === user.id) {
-                actionsCell.innerHTML = `<button onclick="saveRow(${user.id})" class="save-btn">Save</button>`;
-                actionsCell.innerHTML += `<button onclick="cancelEdit(${user.id})" class="cancel-btn">Cancel</button>`;
-            } else {
-                actionsCell.innerHTML = `<button onclick="editRow(${user.id})" class="edit-btn">Edit</button>`;
-                actionsCell.innerHTML += `<button onclick="deleteRow(${user.id})" class="delete-btn">Delete</button>`;
-            }
+            actionsCell.innerHTML = `<button onclick="editRow(this)" class="edit-btn">Edit</button>`;
+            actionsCell.innerHTML += `<button onclick="deleteRow(this)" class="delete-btn">Delete</button>`;
+            actionsCell.innerHTML += `<button onclick="saveRow(this)" class="save-btn" style="display: none;">Save</button>`;
+            actionsCell.innerHTML += `<button onclick="cancelEditRow(this)" class="cancel-btn" style="display: none;">Cancel</button>`;
 
             // Add event listener to handle row selection
             row.addEventListener('click', () => selectRow(row, user.id));
         });
+    }
+
+    // Function to delete a row
+    function deleteRow(button) {
+        // Get the reference to the button's parent row
+        var row = button.parentNode.parentNode;
+        // Remove the row from the table
+        row.parentNode.removeChild(row);
     }
 
     // Render pagination buttons
@@ -226,7 +251,9 @@
                 row.classList.add('selected-row');
             }
         }
-        checkbox.checked = selectedRows.includes(userId);
+        if (checkbox) {
+            checkbox.checked = selectedRows.includes(userId);
+        }
     }
 
     // Function to select or deselect all displayed rows
@@ -257,21 +284,147 @@
     }
 
     // Function to edit a row
-    function editRow(userId) {
-        editedRowId = userId;
-        renderTable(users);
+function editRow(button) {
+    var row = button.closest('tr');
+    var cells = row.getElementsByTagName("td");
+
+    // Store the original values in data attributes
+    for (var i = 0; i < cells.length - 1; i++) {
+        cells[i].setAttribute("data-original-value", cells[i].innerText);
+    }
+
+    // Change the cell content to input fields for editing (only for Name, Email, and Role)
+    for (var i = 1; i <= 3; i++) {
+        cells[i].innerHTML = '<input type="text" value="' + cells[i].innerText + '">';
+    }
+
+    // Toggle button visibility
+    toggleButtonVisibility(row, true);
+
+    // Hide the "Delete" button
+    var deleteButton = row.querySelector('.delete-btn');
+    if (deleteButton) {
+        deleteButton.style.display = 'none';
+    }
+
+    // Apply styles to blur other rows and enlarge the clicked row
+    applyStylesOnEdit(row);
+
+   // Delay the application of the border after the transition
+   setTimeout(function () {
+        // Apply border to the selected row after delay
+        row.style.border = '2px solid #28a745';
+        row.style.borderRadius = '50px';
+    }, 100); // Adjust the delay to match the transition duration
+}
+
+
+    // Function to apply styles on editing
+    function applyStylesOnEdit(row) {
+        // Blur other rows
+        const tableRows = document.querySelectorAll('#userTable tbody tr');
+        tableRows.forEach((otherRow) => {
+            if (otherRow !== row) {
+                otherRow.classList.add('blur-row');
+            }
+        });
+
+        // Enlarge the clicked row
+        row.classList.add('enlarge-row');
     }
 
     // Function to save edited row
-    function saveRow(userId) {
-        editedRowId = null;
-        renderTable(users);
+    function saveRow(button) {
+    var row = button.parentNode.parentNode;
+    var cells = row.getElementsByTagName("td");
+
+    // Apply the transition class for saving
+    row.classList.add('save-transition');
+
+    // Toggle the transition class on the Save button
+    var saveBtn = row.querySelector('.save-btn');
+    if (saveBtn) {
+        saveBtn.classList.add('reverse-save-transition');
     }
 
-    // Function to cancel editing
-    function cancelEdit(userId) {
-        editedRowId = null;
-        renderTable(users);
+    // Apply border to the selected row
+    row.style.border = '2px solid #28a745';
+
+    // Listen for the transition end event
+    row.addEventListener('transitionend', function () {
+        // Change the cell content back to the original values
+        for (var i = 0; i < cells.length - 1; i++) {
+            if (i === 0) {
+                // For the first cell (Checkbox column), recreate the checkbox
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.value = cells[i].getElementsByTagName("input")[0].value;
+                cells[i].innerHTML = '';
+                cells[i].appendChild(checkbox);
+            } else {
+                // For other cells, set the value from the input field
+                cells[i].innerText = cells[i].getElementsByTagName("input")[0].value;
+            }
+        }
+
+        // Toggle button visibility
+        toggleButtonVisibility(row, false);
+
+        // Show the "Delete" button
+        var deleteButton = row.querySelector('.delete-btn');
+        if (deleteButton) {
+            deleteButton.style.display = 'inline-block';
+        }
+
+        // Remove styles applied during editing
+        removeStylesAfterEdit(row);
+
+        // Remove the transition class on the Save button
+        if (saveBtn) {
+            saveBtn.classList.remove('reverse-save-transition');
+        }
+
+        // Remove the transition class for saving after the transition is complete
+        row.classList.remove('save-transition');
+        row.style.border = 'none';
+    }, { once: true });
+}
+
+    // Function to remove styles applied during editing
+    function removeStylesAfterEdit(row) {
+        // Remove blur from other rows
+        const tableRows = document.querySelectorAll('#userTable tbody tr');
+        tableRows.forEach((otherRow) => {
+            if (otherRow !== row) {
+                otherRow.classList.remove('blur-row');
+            }
+        });
+
+        // Remove enlargement from the clicked row
+        row.classList.remove('enlarge-row');
+    }
+
+    function toggleButtonVisibility(row, editing) {
+        var editBtn = row.querySelector('.edit-btn');
+        var saveBtn = row.querySelector('.save-btn');
+        var cancelBtn = row.querySelector('.cancel-btn');
+        var deleteBtn = row.querySelector('.delete-btn');
+
+        if (editBtn) {
+            editBtn.style.display = editing ? 'none' : 'inline-block';
+        }
+
+        if (saveBtn) {
+            saveBtn.style.display = editing ? 'inline-block' : 'none';
+        }
+
+        if (cancelBtn) {
+            cancelBtn.style.display = editing ? 'inline-block' : 'none';
+        }
+
+        if (deleteBtn) {
+            deleteBtn.style.display = editing ? 'none' : 'inline-block';
+        }
     }
 
     // Initialize the dashboard
