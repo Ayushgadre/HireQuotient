@@ -1,7 +1,4 @@
-# HireQuotient
-
-
-Admin Dashboard
+#Admin Dashboard
 This repository contains a simple HTML, CSS, and JavaScript implementation of an Admin Dashboard. The dashboard fetches user data from a provided API endpoint and allows users to interact with the data in a tabular format.
 
 Features
