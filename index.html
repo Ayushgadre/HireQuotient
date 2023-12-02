@@ -6,7 +6,52 @@
     <title>Admin Dashboard</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        header {
+            background-color: #343a40;
+            padding: 10px;
+            color: #fff;
+            text-align: center;
+        }
+
+        main {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            transition: background-color 0.3s, box-shadow 0.3s;
+        }
+
+        .search-bar {
+            margin-bottom: 20px;
+            display: flex;
+        }
+
+        #searchInput {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-right: 10px;
+        }
+
+        .search-icon {
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
         }
 
         table {
@@ -25,20 +70,8 @@
             background-color: #f2f2f2;
         }
 
-        .search-bar {
-            margin-bottom: 20px;
-        }
-
-        .cancel-btn,.delete-btn {
-            background-color: #dc3545;
-            color: #fff;
-            padding: 10px;
-            border: none;
-            cursor: pointer;
-        }
-
-        .selected-row {
-            background-color: #f8f9fa !important;
+        .select-all-checkbox {
+            margin-right: 10px;
         }
 
         .pagination {
@@ -49,36 +82,61 @@
         }
 
         .pagination-btn {
-            background-color: #007bff;
+            background-color: #b38300;
             color: #fff;
             margin: 0 5px;
             padding: 8px 12px;
             cursor: pointer;
             border: none;
             border-radius: 5px;
+            transition: background-color 0.3s;
         }
+
+        .pagination-btn.active-page {
+        background-color: #4bb4c0;
+        color: #333;
+        font-weight: bold;
+}
+
 
         .pagination-btn:hover {
-            background-color: #0056b3;
+            background-color: #b38300;
         }
 
-        .edit-btn, .save-btn {
-            background-color: #28a745;
+        .edit-btn, .save-btn, .cancel-btn {
+            background-color: #dc3545;
+            color: #fff;
+            padding: 10px;
+            margin-right: 5px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .edit-btn:hover, .save-btn:hover, .cancel-btn:hover {
+            background-color: #c82333;
+        }
+
+        .delete-btn{
+            background-color: #80dc35;
             color: #fff;
             padding: 10px;
             border: none;
-            cursor: pointer;
             margin-right: 5px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
         }
 
-        .edit-btn {
-            background-color: #007bff;
+        .delete-btn:hover{
+            background-color:  #80dc35;
         }
 
-        .select-all-checkbox {
-            margin-right: 10px;
+        .selected-row {
+            background-color: #f8f9fa !important;
         }
-      
+
         /* Styles for blurring other rows */
         .blur-row {
             filter: blur(3px);
@@ -86,96 +144,219 @@
 
         /* Styles for enlarging the clicked row */
         .enlarge-row {
-            transform: scale(1.1);
-            font-weight: bold;
-            transition: transform 0.5s ease, font-weight 0.5s ease;
+            transform: scale(1.03);
+            transition: transform 0.3s ease;
         }
 
         /* Styles for transition effects */
         .save-transition {
-            transition: transform 5s ease, font-weight 5s ease, opacity 5s ease, background-color 5s ease, color 5s ease, padding 5s ease;
+            transition: transform 0.5s ease, font-weight 0.5s ease, opacity 0.5s ease, background-color 0.5s ease, color 0.5s ease, padding 0.5s ease;
         }
 
         /* Styles for reverse transition on Save button */
         .reverse-save-transition {
-            transition: transform 0.5s ease, font-weight 0.5s ease, opacity 0.5s ease, background-color 0.5s ease, color 0.5s ease, padding 0.5s ease;
+            transition: transform 0.3s ease, font-weight 0.3s ease, opacity 0.3s ease, background-color 0.3s ease, color 0.3s ease, padding 0.3s ease;
         }
+
+     /* Dark Mode */
+body.dark-mode {
+    background-color: #222;
+    color: #fff;
+}
+
+header.dark-mode {
+    background-color: #444;
+}
+
+main.dark-mode {
+    background-color: #333;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+}
+
+.search-bar.dark-mode #searchInput {
+    background-color: #444;
+    border: 1px solid #666;
+    color: #fff;
+}
+
+.search-bar.dark-mode .search-icon {
+    background-color: #555;
+}
+
+table.dark-mode th {
+    background-color: #382323;
+    color: #ffc107; /* Change this color to make the text visible in dark mode */
+}
+
+
+
+table.dark-mode td {
+    border-bottom: 1px solid #555;
+    color: #fff; /* Added to make the text visible in dark mode */
+}
+
+.pagination-btn.dark-mode {
+    background-color: #666;
+}
+
+.edit-btn.dark-mode,
+.save-btn.dark-mode,
+.cancel-btn.dark-mode {
+    background-color: #dc3545;
+    color: #fff;
+    padding: 10px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+.edit-btn.dark-mode:hover,
+.save-btn.dark-mode:hover,
+.cancel-btn.dark-mode:hover {
+    background-color: #c82333;
+}
+
+.delete-btn.dark-mode {
+    background-color: #80dc35;
+    color: #fff;
+    padding: 10px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+.delete-btn.dark-mode:hover {
+    background-color: #80dc35;
+}
+
+  /* Media Query for smaller screens (e.g., mobile devices) */
+  @media only screen and (max-width: 600px) {
+            main {
+                max-width: 100%;
+                padding: 10px;
+            }
+
+            .search-bar {
+                flex-direction: column;
+                margin-bottom: 10px;
+            }
+
+            #searchInput {
+                margin-right: 0;
+                margin-bottom: 10px;
+            }
+
+            table {
+                font-size: 12px;
+            }
+
+            .pagination-btn {
+                margin: 0 3px;
+            }
+        }
+
+        footer {
+        text-align: center;
+        padding: 10px;
+        background-color: #343a40; /* Match header background color */
+        color: #fff;
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+    }
+
+    footer p {
+        margin: 0;
+    }
+
+
 
     </style>
 </head>
 <body>
 
-<!-- Search Bar Section -->
-<div class="search-bar">
-    <input type="text" id="searchInput" placeholder="Enter Value..." />
-    <button class="search-icon" onclick="search()">Search</button>
-</div>
+<header>
+    <h1>Admin Dashboard</h1>
+    <label for="darkModeToggle">Dark Mode</label>
+    <input type="checkbox" id="darkModeToggle" onchange="toggleDarkMode()">
+</header>
 
-<!-- User Table Section -->
-<table id="userTable">
-    <thead>
-        <tr>
-            <th>
-                <input type="checkbox" class="select-all-checkbox" onclick="selectAllRows()" />
-            </th>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Role</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody></tbody>
-</table>
+<footer id="mainFooter">
+    <p id="realTime"></p>
+</footer>
 
-<!-- Pagination Section -->
-<div class="pagination" id="pagination"></div>
 
-<!-- Delete Selected Button -->
-<div>
-    <button onclick="deleteSelected()" class="delete-btn">Delete Selected</button>
-</div>
+<main>
+    <!-- Search Bar Section -->
+    <div class="search-bar">
+        <input type="text" id="searchInput" placeholder="Enter Value..." />
+        <button class="search-icon" onclick="search()">Search</button>
+    </div>
+
+    <!-- User Table Section -->
+    <table id="userTable">
+        <thead>
+            <tr>
+                <th>
+                    <input type="checkbox" class="select-all-checkbox" onclick="selectAllRows()" />
+                </th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <div id="selectedRowCount">0 of 0 rows selected</div>
+
+    <!-- Pagination Section -->
+    <div class="pagination" id="pagination"></div>
+
+    <!-- Delete Selected Button -->
+    <div>
+        <button onclick="deleteSelected()" class="delete-btn">Delete Selected</button>
+    </div>
+</main>
 
 <!-- JavaScript Section -->
 <script>
-    let users = []; // Array to store fetched users
-    let selectedRows = []; // Array to store selected row IDs
-    let editedRowId = null;
-    let currentPage = 1;
-    const rowsPerPage = 10;
+   let users = [];
+let selectedRows = [];
+let editedRowId = null;
+let currentPage = 1;
+const rowsPerPage = 10;
 
-    // Fetch users from the provided API endpoint
-    async function fetchUsers() {
-        const response = await fetch('https://geektrust.s3-ap-southeast-1.amazonaws.com/adminui-problem/members.json');
-        users = await response.json();
-        renderTable(users);
-        renderPagination();
-    }
+async function fetchUsers() {
+    const response = await fetch('https://geektrust.s3-ap-southeast-1.amazonaws.com/adminui-problem/members.json');
+    users = await response.json();
+    renderTable(users);
+    renderPagination();
+}
 
-    // Render the table with users
-    function renderTable(data) {
-        const tableBody = document.querySelector('#userTable tbody');
-        tableBody.innerHTML = '';
+function renderTable(data) {
+    const tableBody = document.querySelector('#userTable tbody');
+    tableBody.innerHTML = '';
 
-        // Calculate the range of displayed users based on the current page
-        const startIndex = (currentPage - 1) * rowsPerPage;
-        const endIndex = startIndex + rowsPerPage;
-        const displayedUsers = data.slice(startIndex, endIndex);
+    const startIndex = (currentPage - 1) * rowsPerPage;
+    const endIndex = startIndex + rowsPerPage;
+    const displayedUsers = data.slice(startIndex, endIndex);
 
-        displayedUsers.forEach(user => {
+    displayedUsers.forEach(user => {
             const row = tableBody.insertRow();
 
-            // Populate table cells
             Object.entries(user).forEach(([key, value], index) => {
                 const cell = row.insertCell();
                 if (editedRowId === user.id && key !== 'id') {
-                    // Display input field for editing
                     const input = document.createElement('input');
                     input.type = 'text';
                     input.value = value;
                     cell.appendChild(input);
                 } else {
-                    if (index === 0) { // Check if it's the first column
-                        // Add checkbox for row selection to the first column
+                    if (index === 0) {
                         const checkbox = document.createElement('input');
                         checkbox.type = 'checkbox';
                         checkbox.value = user.id;
@@ -186,49 +367,48 @@
                 }
             });
 
-            // Add edit, save, and cancel buttons
             const actionsCell = row.insertCell();
             actionsCell.innerHTML = `<button onclick="editRow(this)" class="edit-btn">Edit</button>`;
             actionsCell.innerHTML += `<button onclick="deleteRow(this)" class="delete-btn">Delete</button>`;
             actionsCell.innerHTML += `<button onclick="saveRow(this)" class="save-btn" style="display: none;">Save</button>`;
             actionsCell.innerHTML += `<button onclick="cancelEditRow(this)" class="cancel-btn" style="display: none;">Cancel</button>`;
 
-            // Add event listener to handle row selection
             row.addEventListener('click', () => selectRow(row, user.id));
         });
     }
 
-    // Function to delete a row
     function deleteRow(button) {
-        // Get the reference to the button's parent row
         var row = button.parentNode.parentNode;
-        // Remove the row from the table
         row.parentNode.removeChild(row);
     }
 
-    // Render pagination buttons
-    function renderPagination() {
-        const totalPages = Math.ceil(users.length / rowsPerPage);
-        const paginationContainer = document.getElementById('pagination');
-        paginationContainer.innerHTML = '';
+   
+function renderPagination() {
+    const totalPages = Math.ceil(users.length / rowsPerPage);
+    const paginationContainer = document.getElementById('pagination');
+    paginationContainer.innerHTML = '';
 
-        // Generate pagination buttons
-        for (let i = 1; i <= totalPages; i++) {
-            const btn = document.createElement('button');
-            btn.classList.add('pagination-btn');
-            btn.textContent = i;
-            btn.addEventListener('click', () => goToPage(i));
-            paginationContainer.appendChild(btn);
+    for (let i = 1; i <= totalPages; i++) {
+        const btn = document.createElement('button');
+        btn.classList.add('pagination-btn');
+        btn.textContent = i;
+        btn.addEventListener('click', () => goToPage(i));
+        
+        // Highlight the current page button
+        if (i === currentPage) {
+            btn.classList.add('active-page');
         }
-    }
 
-    // Function to handle pagination
-    function goToPage(page) {
-        currentPage = page;
-        renderTable(users);
+        paginationContainer.appendChild(btn);
     }
+}
 
-    // Function to search users based on input
+function goToPage(page) {
+    currentPage = page;
+    renderTable(users);
+    renderPagination();
+}
+
     function search() {
         const searchInput = document.getElementById('searchInput').value.toLowerCase();
         const filteredUsers = users.filter(user =>
@@ -239,7 +419,6 @@
         renderPagination();
     }
 
-    // Function to select/deselect a row
     function selectRow(row, userId) {
         const checkbox = row.querySelector('input[type="checkbox"]');
         if (editedRowId !== userId) {
@@ -256,7 +435,34 @@
         }
     }
 
-    // Function to select or deselect all displayed rows
+    let selectedRowsCount = 0;
+
+    function updateSelectedRowCount() {
+    const selectedRowCountElement = document.getElementById('selectedRowCount');
+    selectedRowCountElement.textContent = `${selectedRowsCount} of ${users.length} rows selected`;
+}
+
+
+function selectRow(row, userId) {
+    const checkbox = row.querySelector('input[type="checkbox"]');
+    if (editedRowId !== userId) {
+        if (selectedRows.includes(userId)) {
+            selectedRows = selectedRows.filter(id => id !== userId);
+            row.classList.remove('selected-row');
+            selectedRowsCount--;
+        } else {
+            selectedRows.push(userId);
+            row.classList.add('selected-row');
+            selectedRowsCount++;
+        }
+    }
+    if (checkbox) {
+        checkbox.checked = selectedRows.includes(userId);
+    }
+
+    updateSelectedRowCount();
+}
+
     function selectAllRows() {
         const checkboxes = document.querySelectorAll('#userTable tbody input[type="checkbox"]');
         checkboxes.forEach(checkbox => {
@@ -273,55 +479,47 @@
                 }
             }
         });
+        updateSelectedRowCount();
     }
 
-    // Function to delete selected rows
     function deleteSelected() {
         users = users.filter(user => !selectedRows.includes(user.id));
         renderTable(users);
         renderPagination();
         selectedRows = [];
+        selectedRowsCount = 0;
+    updateSelectedRowCount();
+    }
+    updateSelectedRowCount();
+
+    function editRow(button) {
+        var row = button.closest('tr');
+        var cells = row.getElementsByTagName("td");
+
+        for (var i = 0; i < cells.length - 1; i++) {
+            cells[i].setAttribute("data-original-value", cells[i].innerText);
+        }
+
+        for (var i = 1; i <= 3; i++) {
+            cells[i].innerHTML = '<input type="text" value="' + cells[i].innerText + '">';
+        }
+
+        toggleButtonVisibility(row, true);
+
+        var deleteButton = row.querySelector('.delete-btn');
+        if (deleteButton) {
+            deleteButton.style.display = 'none';
+        }
+
+        applyStylesOnEdit(row);
+
+        setTimeout(function () {
+            row.style.border = '2px solid #28a745';
+            row.style.borderRadius = '10px';
+        }, 100);
     }
 
-    // Function to edit a row
-function editRow(button) {
-    var row = button.closest('tr');
-    var cells = row.getElementsByTagName("td");
-
-    // Store the original values in data attributes
-    for (var i = 0; i < cells.length - 1; i++) {
-        cells[i].setAttribute("data-original-value", cells[i].innerText);
-    }
-
-    // Change the cell content to input fields for editing (only for Name, Email, and Role)
-    for (var i = 1; i <= 3; i++) {
-        cells[i].innerHTML = '<input type="text" value="' + cells[i].innerText + '">';
-    }
-
-    // Toggle button visibility
-    toggleButtonVisibility(row, true);
-
-    // Hide the "Delete" button
-    var deleteButton = row.querySelector('.delete-btn');
-    if (deleteButton) {
-        deleteButton.style.display = 'none';
-    }
-
-    // Apply styles to blur other rows and enlarge the clicked row
-    applyStylesOnEdit(row);
-
-   // Delay the application of the border after the transition
-   setTimeout(function () {
-        // Apply border to the selected row after delay
-        row.style.border = '2px solid #28a745';
-        row.style.borderRadius = '50px';
-    }, 100); // Adjust the delay to match the transition duration
-}
-
-
-    // Function to apply styles on editing
     function applyStylesOnEdit(row) {
-        // Blur other rows
         const tableRows = document.querySelectorAll('#userTable tbody tr');
         tableRows.forEach((otherRow) => {
             if (otherRow !== row) {
@@ -329,70 +527,85 @@ function editRow(button) {
             }
         });
 
-        // Enlarge the clicked row
         row.classList.add('enlarge-row');
     }
 
-    // Function to save edited row
     function saveRow(button) {
-    var row = button.parentNode.parentNode;
-    var cells = row.getElementsByTagName("td");
+        var row = button.parentNode.parentNode;
+        var cells = row.getElementsByTagName("td");
 
-    // Apply the transition class for saving
-    row.classList.add('save-transition');
+        row.classList.add('save-transition');
 
-    // Toggle the transition class on the Save button
-    var saveBtn = row.querySelector('.save-btn');
-    if (saveBtn) {
-        saveBtn.classList.add('reverse-save-transition');
+        var saveBtn = row.querySelector('.save-btn');
+        if (saveBtn) {
+            saveBtn.classList.add('reverse-save-transition');
+        }
+
+        row.style.border = '2px solid #28a745';
+
+        row.addEventListener('transitionend', function () {
+            for (var i = 0; i < cells.length - 1; i++) {
+                if (i === 0) {
+                    const checkbox = document.createElement('input');
+                    checkbox.type = 'checkbox';
+                    checkbox.value = cells[i].getElementsByTagName("input")[0].value;
+                    cells[i].innerHTML = '';
+                    cells[i].appendChild(checkbox);
+                } else {
+                    cells[i].innerText = cells[i].getElementsByTagName("input")[0].value;
+                }
+            }
+
+            toggleButtonVisibility(row, false);
+
+            var deleteButton = row.querySelector('.delete-btn');
+            if (deleteButton) {
+                deleteButton.style.display = 'inline-block';
+            }
+
+            removeStylesAfterEdit(row);
+
+            if (saveBtn) {
+                saveBtn.classList.remove('reverse-save-transition');
+            }
+
+            row.classList.remove('save-transition');
+            row.style.border = 'none';
+        }, { once: true });
     }
 
-    // Apply border to the selected row
-    row.style.border = '2px solid #28a745';
+    function cancelEditRow(button) {
+        var row = button.parentNode.parentNode;
+        var cells = row.getElementsByTagName("td");
 
-    // Listen for the transition end event
-    row.addEventListener('transitionend', function () {
-        // Change the cell content back to the original values
         for (var i = 0; i < cells.length - 1; i++) {
             if (i === 0) {
                 // For the first cell (Checkbox column), recreate the checkbox
                 const checkbox = document.createElement('input');
                 checkbox.type = 'checkbox';
-                checkbox.value = cells[i].getElementsByTagName("input")[0].value;
+                checkbox.value = cells[i].getAttribute("data-original-value");
                 cells[i].innerHTML = '';
                 cells[i].appendChild(checkbox);
             } else {
-                // For other cells, set the value from the input field
-                cells[i].innerText = cells[i].getElementsByTagName("input")[0].value;
+                // For other cells, set the value back to the original value
+                cells[i].innerText = cells[i].getAttribute("data-original-value");
             }
         }
 
-        // Toggle button visibility
         toggleButtonVisibility(row, false);
 
-        // Show the "Delete" button
         var deleteButton = row.querySelector('.delete-btn');
         if (deleteButton) {
             deleteButton.style.display = 'inline-block';
         }
 
-        // Remove styles applied during editing
         removeStylesAfterEdit(row);
 
-        // Remove the transition class on the Save button
-        if (saveBtn) {
-            saveBtn.classList.remove('reverse-save-transition');
-        }
-
-        // Remove the transition class for saving after the transition is complete
         row.classList.remove('save-transition');
         row.style.border = 'none';
-    }, { once: true });
-}
+    }
 
-    // Function to remove styles applied during editing
     function removeStylesAfterEdit(row) {
-        // Remove blur from other rows
         const tableRows = document.querySelectorAll('#userTable tbody tr');
         tableRows.forEach((otherRow) => {
             if (otherRow !== row) {
@@ -400,7 +613,6 @@ function editRow(button) {
             }
         });
 
-        // Remove enlargement from the clicked row
         row.classList.remove('enlarge-row');
     }
 
@@ -427,9 +639,73 @@ function editRow(button) {
         }
     }
 
-    // Initialize the dashboard
+    function toggleDarkMode() {
+        const body = document.body;
+        const header = document.querySelector('header');
+        const main = document.querySelector('main');
+        const searchInput = document.getElementById('searchInput');
+        const searchIcon = document.querySelector('.search-icon');
+        const tableHeaders = document.querySelectorAll('table th');
+        const tableCells = document.querySelectorAll('table td');
+        const paginationBtns = document.querySelectorAll('.pagination-btn');
+        const editBtns = document.querySelectorAll('.edit-btn');
+        const saveBtns = document.querySelectorAll('.save-btn');
+        const cancelBtns = document.querySelectorAll('.cancel-btn');
+        const deleteBtns = document.querySelectorAll('.delete-btn');
+
+        body.classList.toggle('dark-mode');
+        header.classList.toggle('dark-mode');
+        main.classList.toggle('dark-mode');
+        searchInput.classList.toggle('dark-mode');
+        searchIcon.classList.toggle('dark-mode');
+
+        tableHeaders.forEach(th => th.classList.toggle('dark-mode'));
+        tableCells.forEach(td => td.classList.toggle('dark-mode'));
+        paginationBtns.forEach(btn => btn.classList.toggle('dark-mode'));
+        editBtns.forEach(btn => btn.classList.toggle('dark-mode'));
+        saveBtns.forEach(btn => btn.classList.toggle('dark-mode'));
+        cancelBtns.forEach(btn => btn.classList.toggle('dark-mode'));
+        deleteBtns.forEach(btn => btn.classList.toggle('dark-mode'));
+    }
+
     fetchUsers();
+
+
+    function updateRealTime() {
+        const realTimeElement = document.getElementById('realTime');
+        const options = {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: 'numeric',
+            minute: 'numeric',
+            second: 'numeric',
+            timeZoneName: 'short'
+        };
+        const currentDateTime = new Date().toLocaleString(undefined, options);
+        realTimeElement.textContent = `Current Time: ${currentDateTime}`;
+    }
+
+    // Update the time every second
+    setInterval(updateRealTime, 1000);
+
+    // Function to handle footer visibility on scroll
+    function handleFooterVisibility() {
+        const footer = document.getElementById('mainFooter');
+
+        if (window.scrollY > 100) {
+            footer.style.transform = 'translateY(100%)';
+        } else {
+            footer.style.transform = 'translateY(0)';
+        }
+    }
+
+    // Add an event listener to handle scroll events
+    window.addEventListener('scroll', handleFooterVisibility);
+
 </script>
 
 </body>
 </html>
+
